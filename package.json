@@ -1,0 +1,34 @@
+{
+  "name": "simple-docs",
+  "version": "1.0.0",
+  "description": "A markdown documentation parser, usinf marked to diplay markdown pages as html.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "build:sass": "node compile-sass.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.6.4",
+    "node-sass": "^9.0.0",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/api/*.js"
+    ],
+    "coverageReporters": [
+      "lcov",
+      "text",
+      "html"
+    ],
+    "coverageDirectory": "coverage"
+  }
+}
