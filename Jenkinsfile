@@ -2,13 +2,10 @@ pipeline {
     agent any
 
     environment {
-        // Define your GitHub credentials ID in Jenkins
-        GITHUB_CREDENTIALS_ID = 'githubpat'  // Replace with your credentials ID
-        // Define your GitHub username for commit authoring
-        GITHUB_USERNAME = 'roberp05' // Replace with your GitHub username
-        // Define your GitHub email for commit authoring
-        GITHUB_EMAIL = 'paul.roberts05@bbc.co.uk' // Replace with your GitHub email
-        NPM_CREDENTIALS_ID = 'npm_token' // ID of your npm credentials in Jenkins
+        GITHUB_CREDENTIALS_ID = 'githubpat'
+        GITHUB_USERNAME = 'roberp05'
+        GITHUB_EMAIL = 'paul.roberts05@bbc.co.uk'
+        NPM_CREDENTIALS_ID = 'npm_token'
     }
 
     stages {
