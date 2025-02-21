@@ -11,10 +11,10 @@ pipeline {
         NPM_CREDENTIALS_ID = 'npm_token' // ID of your npm credentials in Jenkins
     }
 
-    stages {
+        stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: env.GITHUB_CREDENTIALS_ID, url: 'your-github-repo-url']]]) // Replace with your repo URL
+                checkout([$class: 'GitSCM', extensions: [], userRemoteConfigs: [[credentialsId: env.GITHUB_CREDENTIALS_ID, url: 'your-github-repo-url']]]) // Replace with your repo URL
             }
         }
 
@@ -30,25 +30,58 @@ pipeline {
                 script {
                     def version = sh(returnStdout: true, script: 'npm version --no-git-tag patch').trim()
                     echo "New version: ${version}"
+
+                    if (env.BRANCH_NAME != 'main') { //Example: Add pre-release identifier for non-main branches
+                        version = "${version}-beta.${BUILD_NUMBER}"
+                        echo "Pre-release version: ${version}"
+                    }
+
                     sh "npm version ${version} --no-git-tag"
                     sh "git config --global user.email ${env.GITHUB_EMAIL}"
                     sh "git config --global user.name ${env.GITHUB_USERNAME}"
                     sh "git commit -am 'Version: ${version}'"
-                    sh "git push origin main"
+                    sh "git push origin ${env.BRANCH_NAME}" // Push to the correct branch
                 }
             }
         }
 
-        stage('Build & Publish') {
+        stage('Build') {
             steps {
-                sh 'npm run build' // Replace with your build command
+                script {
+                    if (env.BRANCH_NAME == 'main') {
+                        sh 'npm run build:main' // Example: Main branch build
+                    } else if (env.BRANCH_NAME == 'develop') {
+                        sh 'npm run build:develop' // Example: Develop branch build
+                    } else {
+                        sh 'npm run build' // Default build command
+                    }
+                }
+            }
+        }
 
-                withCredentials([usernamePassword(credentialsId: env.NPM_CREDENTIALS_ID, usernameVariable: 'NPM_USERNAME', passwordVariable: 'NPM_PASSWORD')]) {
-                    sh "echo //registry.npmjs.org/:_authToken=\${NPM_PASSWORD} > .npmrc"  // Create .npmrc
-                    sh "npm config set email ${env.GITHUB_EMAIL}" // Set npm email
-                    sh "npm config set always-auth true" // Always authenticate
-                    sh 'npm publish'
-                    sh 'rm .npmrc' // Remove the .npmrc file for security
+
+
+        stage('Publish') {
+            steps {
+                script {
+                    if (env.BRANCH_NAME == 'main') {
+                        withCredentials([usernamePassword(credentialsId: env.NPM_CREDENTIALS_ID, usernameVariable: 'NPM_USERNAME', passwordVariable: 'NPM_PASSWORD')]) {
+                            sh "echo //registry.npmjs.org/:_authToken=\${NPM_PASSWORD} > .npmrc"
+                            sh "npm config set email ${env.GITHUB_EMAIL}"
+                            sh "npm config set always-auth true"
+                            sh 'npm publish'
+                            sh 'rm .npmrc'
+                        }
+                    } else {
+                        // Example: Publish to a staging registry
+                        withCredentials([usernamePassword(credentialsId: 'your-npm-staging-credentials-id', usernameVariable: 'NPM_USERNAME', passwordVariable: 'NPM_PASSWORD')]) { // Replace with your staging credentials ID
+                            sh "echo //your-staging-registry.com/:_authToken=\${NPM_PASSWORD} > .npmrc" // Replace with your staging registry URL
+                            sh "npm config set email ${env.GITHUB_EMAIL}"
+                            sh "npm config set always-auth true"
+                            sh 'npm publish --registry http://your-staging-registry.com' // Publish to staging
+                            sh 'rm .npmrc'
+                        }
+                    }
                 }
             }
         }
