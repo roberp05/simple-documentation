@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Define your GitHub credentials ID in Jenkins
-        GITHUB_CREDENTIALS_ID = 'GITHUBPATTOKEN'  // Replace with your credentials ID
+        GITHUB_CREDENTIALS_ID = 'GITHUB_PATTOKEN'  // Replace with your credentials ID
         // Define your GitHub username for commit authoring
         GITHUB_USERNAME = 'roberp05' // Replace with your GitHub username
         // Define your GitHub email for commit authoring
