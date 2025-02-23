@@ -11,6 +11,13 @@ pipeline {
         NPM_CREDENTIALS_ID = 'NPMTOKEN' // ID of your npm credentials in Jenkins
     }
 
+    options {
+        skipDefaultCheckout(true)
+        parallelsAlwaysFailFast()
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '20'))
+    }
+
         stages {
         stage('Checkout') {
             steps {
