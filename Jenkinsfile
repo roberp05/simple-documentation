@@ -9,10 +9,11 @@ pipeline {
         // Define your GitHub email for commit authoring
         GITHUB_EMAIL = 'paul.roberts05@bbc.co.uk' // Replace with your GitHub email
         NPM_CREDENTIALS_ID = 'NPMTOKEN' // ID of your npm credentials in Jenkins
+        
     }
 
     options {
-        skipDefaultCheckout(true)
+        skipDefaultCheckout(false)
         parallelsAlwaysFailFast()
         disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '20'))
