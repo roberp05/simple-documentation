@@ -9,7 +9,7 @@ pipeline {
         // Define your GitHub email for commit authoring
         GITHUB_EMAIL = 'paul.roberts05@bbc.co.uk' // Replace with your GitHub email
         NPM_CREDENTIALS_ID = 'NPMTOKEN' // ID of your npm credentials in Jenkins
-        
+
     }
 
     options {
@@ -20,11 +20,6 @@ pipeline {
     }
 
         stages {
-        stage('Checkout') {
-            steps {
-                checkout([$class: 'GitSCM', extensions: [], userRemoteConfigs: [[credentialsId: env.GITHUB_CREDENTIALS_ID, url: 'your-github-repo-url']]]) // Replace with your repo URL
-            }
-        }
 
         stage('Cache Clean & Install') {
             steps {
