@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        docker {
+        dd {
             image 'node:22-alpine' // Or another Node.js image (e.g., node:latest, node:16)
             args '-u root' // Add this if you need root privileges
         }
